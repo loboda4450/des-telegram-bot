@@ -21,7 +21,7 @@ w, h = int(video.get(3)), int(video.get(4))
 
 @client.on(events.InlineQuery)
 async def querylist(event):
-    if len(event.text) > 2:
+    if 2 < len(event.text) < 257:
         if event.text[-2:] == '.c':
             key = get_key(video=video, rng=rng, primes=primes, w=w, h=h)
             ciph = des.run(key=key, text=event.text[:-2], encrypt=True).encode("utf-8").hex()
@@ -50,12 +50,13 @@ async def querylist(event):
     else:
         await event.answer([event.builder.article('**USAGE**',
                                                   text=f'**USAGE**:\n__message.c__ to cipher'
-                                                       f'\n__key + message.d__ to decipher')])
+                                                       f'\n__key + message.d__ to decipher'
+                                                       f'\nmessage to cipher must be upto 255 chars long (without switch)')])
 
 
 @client.on(events.NewMessage)
 async def answer(event):
-    if len(event.text) > 2:
+    if 2 < len(event.text) < 257:
         if event.text[-2:] == '.c':
             key = get_key(video=video, rng=rng, primes=primes, w=w, h=h)
             ciph = (des.run(key=key, text=event.text[:-2], encrypt=True)).encode("utf-8").hex()
@@ -75,7 +76,8 @@ async def answer(event):
                 await event.reply('**KEY ERROR!**\nKey is not 8 signs long')
 
     else:
-        await event.reply('**USAGE**:\n__message.c__ to cipher\n__key + message.d__ to decipher')
+        await event.reply('**USAGE**:\n__message.c__ to cipher\n__key + message.d__ to decipher'
+                          '\nmessage to cipher must be upto 255 chars long (without switch)')
 
 
 client.start()
